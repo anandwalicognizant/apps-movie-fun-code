@@ -14,14 +14,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 --%>
-<%@ page import=" org.superbiz.moviefun.Movie" %>
-<%@ page import="org.superbiz.moviefun.MoviesBean" %>
-<%@ page import="javax.naming.InitialContext" %>
-<%@ page import="java.util.Iterator" %>
-<%@ page import="java.util.List" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<<<<<<< HEAD:src/main/webapp/WEB-INF/setup.jsp
 <%--<%
   InitialContext initialContext = new InitialContext();
   MoviesBean moviesBean = (MoviesBean) initialContext.lookup("java:comp/env/org.superbiz.moviefun.ActionServlet/moviesBean");
@@ -34,6 +30,8 @@
   moviesBean.addMovie(new Movie("Zoolander", "Ben Stiller", "Comedy", 6, 2001));
   moviesBean.addMovie(new Movie("Shanghai Noon", "Tom Dey", "Comedy", 7, 2000));
 %>--%>
+=======
+>>>>>>> temp:src/main/webapp/WEB-INF/setup.jsp
 <c:set var="language" value="${pageContext.request.locale}"/>
 <fmt:setLocale value="${language}"/>
 
@@ -79,12 +77,21 @@
 
   <h2>Seeded Database with the Following movies</h2>
   <table width="500">
+<<<<<<< HEAD:src/main/webapp/WEB-INF/setup.jsp
 
+=======
+    <tr>
+      <td><b>Title</b></td>
+      <td><b>Director</b></td>
+      <td><b>Genre</b></td>
+    </tr>
+>>>>>>> temp:src/main/webapp/WEB-INF/setup.jsp
     <c:forEach items="${requestScope.movies}" var="movie">
       <tr>
         <td>${ movie.title }</td>
         <td>${ movie.director }</td>
         <td>${ movie.genre }</td>
+<<<<<<< HEAD:src/main/webapp/WEB-INF/setup.jsp
       <td>${ movie.title }
       </td>
       <td>${ movie.director }
@@ -92,10 +99,31 @@
       <td>${ movie.genre }
       </td>
     </tr>
+=======
+      </tr>
+>>>>>>> temp:src/main/webapp/WEB-INF/setup.jsp
     </c:forEach>
   </table>
 
-  <h2>Continue</h2>
+    <h2>Seeded Database with the Following albums</h2>
+    <table width="500">
+        <tr>
+            <td><b>Title</b></td>
+            <td><b>Artist</b></td>
+            <td><b>Year</b></td>
+        </tr>
+
+        <c:forEach items="${requestScope.albums}" var="album">
+            <tr>
+                <td> ${album.title} </td>
+                <td> ${album.artist} </td>
+                <td> ${album.year} </td>
+            </tr>
+        </c:forEach>
+    </table>
+
+
+    <h2>Continue</h2>
   <a href="moviefun">Go to main app</a>
 </div>
 <!-- /container -->

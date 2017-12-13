@@ -5,9 +5,16 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/movies?useSSL=false
     username: root
+<<<<<<< HEAD
     password: pal-training
 
 
   mvc.view:
     prefix: /WEB-INF/
     suffix: .jsp
+=======
+
+  mvc.view:
+    prefix: /WEB-INF/
+    suffix: .jsp
+>>>>>>> temp

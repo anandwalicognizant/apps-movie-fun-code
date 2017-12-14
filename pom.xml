@@ -32,8 +32,7 @@
         <java.version>1.8</java.version>
     </properties>
 
-<<<<<<< HEAD
-    <repositories>
+   <!-- <repositories>
         <repository>
             <id>apache-m2-snapshot</id>
             <name>Apache Snapshot Repository</name>
@@ -41,9 +40,7 @@
         </repository>
     </repositories>
 
-
-=======
->>>>>>> temp
+-->
     <build>
         <finalName>moviefun</finalName>
         <defaultGoal>package</defaultGoal>
@@ -55,11 +52,7 @@
         </plugins>
     </build>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.4.2.RELEASE</version>
-    </parent>
+
 
     <dependencies>
         <dependency>
@@ -112,34 +105,12 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
-<<<<<<< HEAD
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>4.3.4.RELEASE</version>
-        </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>2.5.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-jasper</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-=======
->>>>>>> temp
+
     </dependencies>
 </project>

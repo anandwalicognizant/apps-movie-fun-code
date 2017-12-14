@@ -17,12 +17,13 @@
 package org.superbiz.moviefun;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-<<<<<<< HEAD
-=======
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.superbiz.moviefun.movies.Movie;
 import org.superbiz.moviefun.movies.MoviesBean;
->>>>>>> temp
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -42,8 +43,14 @@ public class ActionServlet extends HttpServlet {
 
     public static int PAGE_SIZE = 5;
 
-    @EJB
-    private MoviesBean moviesBean;
+    private final PlatformTransactionManager moviesTransactionManager;
+
+    private final MoviesBean moviesBean;
+
+    public ActionServlet(@Qualifier("moviesTM")PlatformTransactionManager moviesTransactionManager, MoviesBean moviesBean){
+        this.moviesBean = moviesBean;
+        this.moviesTransactionManager = moviesTransactionManager;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -68,16 +75,31 @@ public class ActionServlet extends HttpServlet {
 
             Movie movie = new Movie(title, director, genre, rating, year);
 
-            moviesBean.addMovie(movie);
+
+            TransactionStatus status = moviesTransactionManager.getTransaction(null);
+            try {
+                moviesBean.addMovie(movie);
+            }catch(Exception e){
+                moviesTransactionManager.rollback(status);
+                throw  e;
+            }
+            moviesTransactionManager.commit(status);
             response.sendRedirect("moviefun");
             return;
 
         } else if ("Remove".equals(action)) {
 
             String[] ids = request.getParameterValues("id");
-            for (String id : ids) {
-                moviesBean.deleteMovieId(new Long(id));
+            TransactionStatus status = moviesTransactionManager.getTransaction(null);
+            try {
+                for (String id : ids) {
+                    moviesBean.deleteMovieId(new Long(id));
+                }
+            }catch(Exception e){
+                moviesTransactionManager.rollback(status);
+                throw e;
             }
+            moviesTransactionManager.commit(status);
 
             response.sendRedirect("moviefun");
             return;

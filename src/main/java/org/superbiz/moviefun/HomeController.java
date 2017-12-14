@@ -1,44 +1,21 @@
 package org.superbiz.moviefun;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
-<<<<<<< HEAD
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.transaction.Transactional;
-import java.util.List;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+
 import java.util.Map;
 
 /**
  * Created by aw169 on 12/12/17.
  */
-@Controller
-public class HomeController {
 
-    private MoviesBean moviesBean;
-
-    public HomeController(MoviesBean bean){
-        this.moviesBean = bean;
-    }
-
-    @RequestMapping("/")
-    public String index(){
-        return "index";
-    }
-
-
-    @RequestMapping("/setup")
-    public String setup(Map<String, Object> model){
-        moviesBean.addMovie(new Movie("Wedding Crashers", "David Dobkin", "Comedy", 7, 2005));
-        moviesBean.addMovie(new Movie("Starsky & Hutch", "Todd Phillips", "Action", 6, 2004));
-        moviesBean.addMovie(new Movie("Shanghai Knights", "David Dobkin", "Action", 6, 2003));
-        moviesBean.addMovie(new Movie("I-Spy", "Betty Thomas", "Adventure", 5, 2002));
-        moviesBean.addMovie(new Movie("The Royal Tenenbaums", "Wes Anderson", "Comedy", 8, 2001));
-        moviesBean.addMovie(new Movie("Zoolander", "Ben Stiller", "Comedy", 6, 2001));
-        moviesBean.addMovie(new Movie("Shanghai Noon", "Tom Dey", "Comedy", 7, 2000));
-        List<Movie> movies = moviesBean.getMovies();
-        model.put("movies", movies);
-=======
 import org.springframework.web.bind.annotation.GetMapping;
 import org.superbiz.moviefun.albums.Album;
 import org.superbiz.moviefun.albums.AlbumFixtures;
@@ -47,8 +24,6 @@ import org.superbiz.moviefun.movies.Movie;
 import org.superbiz.moviefun.movies.MovieFixtures;
 import org.superbiz.moviefun.movies.MoviesBean;
 
-import java.util.Map;
-
 @Controller
 public class HomeController {
 
@@ -56,33 +31,76 @@ public class HomeController {
     private final AlbumsBean albumsBean;
     private final MovieFixtures movieFixtures;
     private final AlbumFixtures albumFixtures;
+   /* @Autowired
+    @Qualifier("moviesTM")*/
+    private final PlatformTransactionManager moviesTM;
+  /*  @Autowired
+    @Qualifier("albumsTM")*/
+    private final PlatformTransactionManager albumsTM;
 
-    public HomeController(MoviesBean moviesBean, AlbumsBean albumsBean, MovieFixtures movieFixtures, AlbumFixtures albumFixtures) {
+    //@Autowired
+    public HomeController(MoviesBean moviesBean, AlbumsBean albumsBean, MovieFixtures movieFixtures, AlbumFixtures albumFixtures, PlatformTransactionManager moviesTM,  PlatformTransactionManager albumsTM) {
         this.moviesBean = moviesBean;
         this.albumsBean = albumsBean;
         this.movieFixtures = movieFixtures;
         this.albumFixtures = albumFixtures;
+
+        this.moviesTM = moviesTM;
+        this.albumsTM = albumsTM;
     }
 
     @GetMapping("/")
     public String index() {
+
         return "index";
     }
 
     @GetMapping("/setup")
     public String setup(Map<String, Object> model) {
-        for (Movie movie : movieFixtures.load()) {
-            moviesBean.addMovie(movie);
-        }
 
-        for (Album album : albumFixtures.load()) {
-            albumsBean.addAlbum(album);
-        }
+        System.out.println("movies TM :" + moviesTM );
+        System.out.println("albums TM :" + albumsTM);
 
+        addMovies();
+
+        System.out.println("In setup mapping movies");
+
+        addAlbums();
+
+        System.out.println("In setup mapping albums");
         model.put("movies", moviesBean.getMovies());
         model.put("albums", albumsBean.getAlbums());
 
->>>>>>> temp
         return "setup";
+    }
+
+    private void addAlbums() {
+        TransactionStatus transactionStatus = albumsTM.getTransaction(null);
+        try {
+
+            for (Album album : albumFixtures.load()) {
+                albumsBean.addAlbum(album);
+            }
+        }catch(Exception e){
+            albumsTM.rollback(transactionStatus);
+            throw e;
+
+        }
+        albumsTM.commit(transactionStatus);
+    }
+
+    private void addMovies() {
+        TransactionStatus transaction = moviesTM.getTransaction(null);
+        try {
+
+            for (Movie movie : movieFixtures.load()) {
+
+                moviesBean.addMovie(movie);
+            }
+        }catch(Exception e){
+            moviesTM.rollback(transaction);
+            throw e;
+        }
+        moviesTM.commit(transaction);
     }
 }

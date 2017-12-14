@@ -12,9 +12,16 @@ import java.util.Scanner;
 
 public class CsvUtils {
 
+
     public static String readFile(String path) {
-        try {
-            Scanner scanner = new Scanner(new File(path)).useDelimiter("\\A");
+        //try {
+
+            ClassLoader classLoader = CsvUtils.class.getClassLoader();
+            Scanner scanner = new Scanner(classLoader.getResourceAsStream(path)).useDelimiter("\\A");//new File(path)).useDelimiter("\\A");
+
+            if(scanner == null)
+                throw new RuntimeException("Could not load file from parth : " + path);
+
 
             if (scanner.hasNext()) {
                 return scanner.next();
@@ -22,9 +29,9 @@ public class CsvUtils {
                 return "";
             }
 
-        } catch (FileNotFoundException e) {
+        /*} catch (FileNotFoundException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     public static <T> List<T> readFromCsv(ObjectReader objectReader, String path) {
